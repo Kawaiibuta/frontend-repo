@@ -23,16 +23,16 @@ const INITIAL_STATE = {
 };
 function LoginForm() {
   const router = useRouter();
-  const [cookie, setCookie] = useCookies(['intern-last-login'])
+  const [cookie, setCookie] = useCookies(["intern-last-login"]);
   const [formState, formAction] = useFormState(
     async (prevState: any, formData: FormData) => {
       try {
         const result = await login(formData);
-        if (result.id && result.token){
-          setCookie("intern-last-login",  result.token)
+        if (result.id && result.token) {
+          setCookie("intern-last-login", result.token);
           router.push(`/user`);
-        } 
-          
+        }
+
         return { ...prevState, data: result };
       } catch (error) {
         return { ...prevState, error: (error as Error).message };
