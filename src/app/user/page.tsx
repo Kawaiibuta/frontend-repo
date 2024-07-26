@@ -1,21 +1,11 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { cookies } from "next/headers";
-import UpdateButton from "../../../components/UpdateButton";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import RetrieveUserButton from "../../../components/RetrieveUserButton";
-const backend_url = "http://127.0.0.1:1000";
+const backend_url = process.env.BACKEND_URL;
 
 export default async function User() {
   const cookieStore = cookies();
+  console.log(backend_url);
   var user: any = null;
   const response = await fetch(`${backend_url}/fetch-user-data`, {
     method: "GET",
@@ -24,7 +14,7 @@ export default async function User() {
     },
   });
   if (response.status == 200) user = await response.json();
-
+  console.log(response);
   return user ? (
     <Card sx={{ maxWidth: 345, margin: "20px auto" }} className="rounded">
       <CardContent>
@@ -93,6 +83,8 @@ export default async function User() {
       </CardContent>
     </Card>
   ) : (
-    <RetrieveUserButton token={cookieStore.get("intern-last-login")?.value}></RetrieveUserButton>
+    <RetrieveUserButton
+      token={cookieStore.get("intern-last-login")?.value}
+    ></RetrieveUserButton>
   );
 }

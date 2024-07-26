@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 import firebase from "firebase/compat/app";
 import "firebase/firestore";
 import "firebase/compat/auth";
+import { headers } from "next/headers";
 
 
 // Your web app's Firebase configuration
@@ -20,6 +21,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(app);
+//THis is for testing the FE with Firebase emulator
+// if(headers().get('host') === "localhost:3000")
+//     auth.useEmulator("http://127.0.0.1:9099");
 export async function login(formData: FormData) {
     return await auth.signInWithEmailAndPassword(formData.get("email")?.toString() ?? "", formData.get("password")?.toString() ?? "").then(async (value) => {
         const token = await auth.currentUser?.getIdToken()
@@ -57,7 +61,7 @@ export async function signup(formData: FormData) {
 }
 
 export async function getUserData(token: string) {
-    const backend_url = "http://127.0.0.1:1000";
+    const backend_url = process.env.BACKEND_URL;
     return await fetch(`${backend_url}/fetch-user-data`, {
         method: "GET",
         headers: {

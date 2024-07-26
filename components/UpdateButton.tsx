@@ -22,7 +22,7 @@ import {
   updateLoading,
   updateSuccess,
 } from "../store/actions";
-const backend_url = "http://127.0.0.1:1000";
+const backend_url = process.env.BACKEND_URL;
 
 export default function UpdateButton({ token }: { token: string }) {
   const dispatch = useAppDispatch();

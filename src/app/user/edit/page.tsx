@@ -10,7 +10,7 @@ import {
 import { cookies } from "next/headers";
 import UpdateButton from "../../../../components/UpdateButton";
 
-const backend_url = "http://127.0.0.1:1000";
+const backend_url = process.env.BACKEND_URL;
 
 export default async function EditForm() {
   const cookieStore = cookies();
