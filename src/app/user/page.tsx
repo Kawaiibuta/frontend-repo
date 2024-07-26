@@ -11,6 +11,7 @@ import { cookies } from "next/headers";
 import UpdateButton from "../../../components/UpdateButton";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import RetrieveUserButton from "../../../components/RetrieveUserButton";
 const backend_url = "http://127.0.0.1:1000";
 
 export default async function User() {
@@ -92,8 +93,6 @@ export default async function User() {
       </CardContent>
     </Card>
   ) : (
-    <Button fullWidth variant="contained" href="">
-      Get user's data
-    </Button>
+    <RetrieveUserButton token={cookieStore.get("intern-last-login")?.value}></RetrieveUserButton>
   );
 }

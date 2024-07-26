@@ -1,32 +1,25 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Icon,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { cookies } from "next/headers";
-import UpdateButton from "../../../../components/UpdateButton";
+"use client";
 
-const backend_url = "http://127.0.0.1:1000";
+import { Box, Card, CardContent, TextField, Typography } from "@mui/material";
+import UpdateButton from "./UpdateButton";
+import { useEffect } from "react";
+import { getUserData } from "../apis/userApi";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
-export default async function EditForm() {
-  const cookieStore = cookies();
-  var user: any = null;
-  await fetch(`${backend_url}/fetch-user-data`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${cookieStore.get("intern-last-login")?.value}`,
-    },
-  }).then(async (value) => {
-    if (value.status == 401) {
-      cookieStore.delete("intern-last-login");
-      return;
+export default function UserForm({token}: {token: string}) {
+  const user = useAppSelector((state) => state.data.user)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    getUser()
+  }, []);
+  async function getUser () {
+    const response = await getUserData(token)
+    if (response.status == 401) {
+        cookieStore.delete("intern-last-login");
+        return;
     }
     if (value.status == 200) user = await value.json();
-  });
+  }
   return (
     <Card
       sx={{ maxWidth: 400, margin: "20px 0px", width: "100%" }}

@@ -15,12 +15,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useState, FormEvent } from "react";
 import { useCookies } from "react-cookie";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import {
+  MessageType,
+  updateFail,
+  updateLoading,
+  updateSuccess,
+} from "../store/actions";
 const backend_url = "http://127.0.0.1:1000";
 
 export default function UpdateButton({ token }: { token: string }) {
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [type, setType] = useState("info");
+  const message = useAppSelector((state) => state.data.message);
+  const messageType = useAppSelector((state) => state.data.messageType);
+
   const handleClick = () => {
     setOpen(true);
   };
@@ -35,9 +44,9 @@ export default function UpdateButton({ token }: { token: string }) {
 
     setOpen(false);
   };
-  const [loading, setLoading] = useState(false);
+  const loading = useAppSelector((state) => state.data.loading);
   function handleUpdateUser() {
-    setLoading(true);
+    dispatch(updateLoading());
     const data = {
       name:
         (document.getElementById("name-input") as HTMLInputElement).value ?? "",
@@ -55,14 +64,11 @@ export default function UpdateButton({ token }: { token: string }) {
       },
     }).then(async (value) => {
       if (!value.ok) {
-        setError(await value.text());
-        setType("error");
+        dispatch(updateFail(await value.text()));
       } else {
-        setError("Successfully update user's data.");
-        setType("success");
+        dispatch(updateSuccess(await value.json()));
       }
       handleClick();
-      setLoading(false);
     });
   }
 
@@ -83,14 +89,14 @@ export default function UpdateButton({ token }: { token: string }) {
           </Button>
         )}
       </Box>
-      <Snackbar open={open} autoHideDuration={6000}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
           onClose={handleClose}
-          severity={type == "error" ? "error" : "success"}
+          severity={messageType == MessageType.SUCCESS ? "success" : "error"}
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {error}
+          {message}
         </Alert>
       </Snackbar>
     </>

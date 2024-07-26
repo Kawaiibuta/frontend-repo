@@ -55,3 +55,13 @@ export async function signup(formData: FormData) {
     })
 
 }
+
+export async function getUserData(token: string) {
+    const backend_url = "http://127.0.0.1:1000";
+    return await fetch(`${backend_url}/fetch-user-data`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+}
