@@ -21,6 +21,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(app);
+const backendUrl = process.env.BACKEND_URL
 //THis is for testing the FE with Firebase emulator
 // if(headers().get('host') === "localhost:3000")
 //     auth.useEmulator("http://127.0.0.1:9099");
@@ -38,12 +39,15 @@ export async function login(formData: FormData) {
         }
         throw new Error("Unknown error")
     })
-
 }
 export async function signup(formData: FormData) {
     return await auth.createUserWithEmailAndPassword(formData.get("email")?.toString() ?? "", formData.get("password")?.toString() ?? "").then(async (value) => {
         const token = await auth.currentUser?.getIdToken()
-        return { id: auth.currentUser?.uid, token: token }
+        const data = { "email": formData.get("email"), "name": "Unknown", "dateOfBirth": new Date().toISOString() }
+        const result = await fetch(backendUrl + "/create-user", { method: "POST", body: JSON.stringify(data), headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" } })
+        if (result.status == 200)
+            return { id: auth.currentUser?.uid, token: token }
+        throw new Error("Server Error")
     }).catch((error) => {
         if (error instanceof FirebaseError) {
             console.log(error)
@@ -51,6 +55,8 @@ export async function signup(formData: FormData) {
                 throw new Error("The email is invalid")
             if (error.code == 'auth/missing-password')
                 throw new Error("The password is missing")
+            if (error.code == 'auth/email-already-in-use')
+                throw new Error("The email is already in use")
             //This help if we want to handle other error
             throw new Error("Unknown Firebase error")
 

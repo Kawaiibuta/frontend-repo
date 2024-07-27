@@ -22,9 +22,8 @@ import {
   updateLoading,
   updateSuccess,
 } from "../store/actions";
-const backend_url = process.env.BACKEND_URL;
 
-export default function UpdateButton({ token }: { token: string }) {
+export default function UpdateButton({ token, backendUrl }: { token: string, backendUrl: string }) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const message = useAppSelector((state) => state.data.message);
@@ -55,7 +54,7 @@ export default function UpdateButton({ token }: { token: string }) {
         (document.getElementById("date-input") as HTMLInputElement).value ?? "",
     };
     console.log(data);
-    fetch(backend_url + "/update-user-data", {
+    fetch(backendUrl + "/update-user-data", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

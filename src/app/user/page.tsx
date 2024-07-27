@@ -2,11 +2,14 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { cookies } from "next/headers";
 import RetrieveUserButton from "../../../components/RetrieveUserButton";
 const backend_url = process.env.BACKEND_URL;
-
+export const metadata = {
+  title: 'User data preview - Intern app'
+}
 export default async function User() {
   const cookieStore = cookies();
-  console.log(backend_url);
   var user: any = null;
+  //This has been cached in layout so when this is call both in layout and in page
+  //It will not waste any more time
   const response = await fetch(`${backend_url}/fetch-user-data`, {
     method: "GET",
     headers: {
@@ -14,9 +17,8 @@ export default async function User() {
     },
   });
   if (response.status == 200) user = await response.json();
-  console.log(response);
   return user ? (
-    <Card sx={{ maxWidth: 345, margin: "20px auto" }} className="rounded">
+    <Card sx={{ maxWidth: 400, margin: "20px auto", width: "100%" }} className="rounded">
       <CardContent>
         <Typography variant="h4" component="div">
           User Information
@@ -85,6 +87,7 @@ export default async function User() {
   ) : (
     <RetrieveUserButton
       token={cookieStore.get("intern-last-login")?.value}
+      backendUrl={backend_url ?? ""}
     ></RetrieveUserButton>
   );
 }

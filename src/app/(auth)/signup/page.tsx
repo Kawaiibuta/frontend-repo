@@ -12,6 +12,7 @@ import { signup } from "../../../../apis/userApi";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useCookies } from "react-cookie";
+
 export default function SignupPage() {
   return (
     <main>

@@ -11,7 +11,10 @@ import { cookies } from "next/headers";
 import UpdateButton from "../../../../components/UpdateButton";
 
 const backend_url = process.env.BACKEND_URL;
-
+export const metadata = {
+  title: 'Edit user form - Intern app',
+  description: "Form to update user data"
+}
 export default async function EditForm() {
   const cookieStore = cookies();
   var user: any = null;
@@ -101,6 +104,7 @@ export default async function EditForm() {
         </Box>
         <UpdateButton
           token={cookieStore.get("intern-last-login")?.value ?? ""}
+          backendUrl={backend_url ?? ""}
         ></UpdateButton>
       </CardContent>
     </Card>

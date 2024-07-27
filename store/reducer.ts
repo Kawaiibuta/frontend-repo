@@ -1,5 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { MessageType, updateFail, updateLoading, updateSuccess, UpdateUserState } from "./actions";
+import { authorized, MessageType, unauthorized, updateFail, updateLoading, updateSuccess, UpdateUserState, verifyLoading } from "./actions";
 
 export const initialState = { user: undefined, message: undefined, messageType: MessageType.INFO, loading: false } satisfies UpdateUserState as UpdateUserState
 export const userReducer = createReducer(initialState, (builder) => {
@@ -16,6 +16,22 @@ export const userReducer = createReducer(initialState, (builder) => {
             state.loading = false
         })
         .addCase(updateLoading, (state, action) => {
+            state.loading = true
+            state.message = "Loading"
+            state.messageType = MessageType.INFO
+        })
+        .addCase(authorized, (state, action) => {
+            state.loading = false
+            state.message = "Authorized"
+            state.messageType = MessageType.SUCCESS
+            state.user = action.payload
+        })
+        .addCase(unauthorized, (state, action) => {
+            state.loading = false
+            state.message = "Unauthorized"
+            state.messageType = MessageType.ERROR
+        })
+        .addCase(verifyLoading, (state, action) => {
             state.loading = true
             state.message = "Loading"
             state.messageType = MessageType.INFO
